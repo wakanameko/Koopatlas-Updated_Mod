@@ -10,7 +10,7 @@ class KP:
         else:
             KP.app.settings = QtCore.QSettings('Koopatlas', 'Newer Team')
 
-        KP.app.setWindowIcon(QtGui.QIcon('Resources/Koopatlas.png'))
+        KP.loadAnySettings()
 
         from mapdata import KPMap
         KP.map = KPMap()
@@ -23,7 +23,6 @@ class KP:
         KP.enumerateTilesets()
 
         KP.app.exec_()
-
 
     @classmethod
     def icon(cls, name):
@@ -39,6 +38,24 @@ class KP:
             icon = QtGui.QIcon('Resources/%s.png' % name)
             cache[name] = icon
             return icon
+
+    @classmethod
+    def loadAnySettings(cls):
+        global language
+        global appearance
+        if os.path.isfile('data.ini'):
+            with open('data.ini', mode = 'r') as f:
+                s = f.read().splitlines()
+                appearance = s[0]
+                language = s[1]
+        else:
+            with open('data.ini', mode = 'w') as f:
+                s = 'light\neng'
+                f.write(s)
+                appearance = 'light'
+                language = 'eng'
+
+
 
 
     @classmethod
@@ -64,7 +81,10 @@ class KP:
                 registry[name] = {'path': filepath}
 
         if not foundAnyTilesets:
-            QtWidgets.QMessageBox.warning(None, 'Warning', "Your Tilesets folder seems to be empty. You won't be able to load any world maps without them! You can get Newer Wii's world map and tileset files at <a href=\"https://github.com/Newer-Team/NewerSMBW/tree/no-translations/NewerResources\">https://github.com/Newer-Team/NewerSMBW/tree/no-translations/NewerResources</a>.")
+            if language == 'eng':
+                QtWidgets.QMessageBox.warning(None, 'Warning', "Your Tilesets folder seems to be empty. You won't be able to load any world maps without them! You can get Newer Wii's world map and tileset files at <a href=\"https://github.com/Newer-Team/NewerSMBW/tree/no-translations/NewerResources\">https://github.com/Newer-Team/NewerSMBW/tree/no-translations/NewerResources</a>.")
+            if language == 'jpn':
+                QtWidgets.QMessageBox.warning(None, '警告', "タイルセットが見つかりません。マップを正常に読み込むために、こちらからタイルセットをダウンロードしてください。<a href=\"https://github.com/Newer-Team/NewerSMBW/tree/no-translations/NewerResources\">https://github.com/Newer-Team/NewerSMBW/tree/no-translations/NewerResources</a>")
 
 
     @classmethod
@@ -75,7 +95,10 @@ class KP:
             return True
 
         if name not in cls.knownTilesets:
-            QtWidgets.QMessageBox.critical(None, 'Error', "Could not find the tileset \"%s\" in the Tilesets folder. Please put it there, restart Koopatlas, and try again." % name)
+            if language == 'eng':
+                QtWidgets.QMessageBox.critical(None, 'Error', "Could not find the tileset \"%s\" in the Tilesets folder. Please put it there, restart Koopatlas, and try again." % name)
+            if language == 'jpn':
+                QtWidgets.QMessageBox.critical(None, 'エラー', "タイルセット \"%s\" が見つかりません。KoopatlasのTilesetsフォルダにファイルを追加し、再度試してください。" % name)
             return False
 
         filepath = cls.knownTilesets[name]['path']
