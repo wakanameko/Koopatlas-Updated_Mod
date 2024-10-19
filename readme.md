@@ -1,4 +1,10 @@
-# Koopatlas ("Koopatlas-Updated" fork)
+# Koopatlas (("Koopatlas-Updated" fork) Mod fork)
+
+Added Features:
+- Language Select function (in now, there are English and Japanese only.)
+- Quit key sequence as Ctrl+Q
+
+## "Updated" readme below
 
 An editor for world maps for the custom Koopatlas Engine for New Super Mario Bros. Wii, created by Treeki.
 
