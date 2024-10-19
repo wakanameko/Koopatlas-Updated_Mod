@@ -1,5 +1,6 @@
 import re
 import sys
+from main import language
 
 LEVEL_RE = re.compile(r'^([0-9]{1,2})-([0-9]{1,2})( secret)?$')
 COINS_RE = re.compile(r'^(unspent |total )?star coins (<|>|==|!=) ([0-9]{1,3})$')
@@ -215,22 +216,38 @@ class KPUnlockSpecDialog(QtWidgets.QDialog):
     def __init__(self, forWhat, unlockAdjective):
         QtWidgets.QDialog.__init__(self)
 
-        self.setWindowTitle('Set Unlock Criteria')
-
-        text = """You may enter various criteria that must be fulfilled for this {0} to be {1}.<br>
-            <br>
-            Here are some examples of what you can use:
-            <ul>
-                <li>01-01 - <i>a single criterion</i></li>
-                <li>01-01 secret - <i>secret exits</i></li>
-                <li>(01-01 secret) and (01-02) - <i>combine two criteria</i></li>
-                <li>((01-01 secret) or (01-02)) and (01-04) - <i>nested criteria</i></li>
-            </ul>
-            Each criterion used on the sides of AND and OR must be surrounded by parentheses.
-            You may use more than one, for example: <i>(01-01) or (02-02) or (03-03)</i><br>
-            <br>
-            To leave this {0} permanently unlocked, leave the box blank.
-            """.format(forWhat, unlockAdjective)
+        if language == 'eng':
+            self.setWindowTitle('Set Unlock Criteria')
+            text = """You may enter various criteria that must be fulfilled for this {0} to be {1}.<br>
+                <br>
+                Here are some examples of what you can use:
+                <ul>
+                    <li>01-01 - <i>a single criterion</i></li>
+                    <li>01-01 secret - <i>secret exits</i></li>
+                    <li>(01-01 secret) and (01-02) - <i>combine two criteria</i></li>
+                    <li>((01-01 secret) or (01-02)) and (01-04) - <i>nested criteria</i></li>
+                </ul>
+                Each criterion used on the sides of AND and OR must be surrounded by parentheses.
+                You may use more than one, for example: <i>(01-01) or (02-02) or (03-03)</i><br>
+                <br>
+                To leave this {0} permanently unlocked, leave the box blank.
+                """.format(forWhat, unlockAdjective)
+        elif language == 'jpn':
+            self.setWindowTitle('解放条件の入力')
+            text = """道を解放する条件を入力できます。<br>
+                <br>
+                例：
+                <ul>
+                    <li>01-01 - <i>1つの判断基準（ステージクリア）</i></li>
+                    <li>01-01 secret - <i>1つの判断基準（隠しゴールクリア）</i></li>
+                    <li>(01-01 secret) and (01-02) - <i>2つの両側判断条件</i></li>
+                    <li>((01-01 secret) or (01-02)) and (01-04) - <i>3つの片側＋両側判断条件</i></li>
+                </ul>
+                ANDとORの条件は、括弧で囲む必要があります。
+                2つ以上の条件を追加する場合、次のように入力します：<i>(01-01) or (02-02) or (03-03)</i><br>
+                <br>
+                常に開放しておく場合、空欄のままにしておいてください。
+                """.format(forWhat, unlockAdjective)
 
         self.label = QtWidgets.QLabel(text)
         self.label.setWordWrap(True)
@@ -271,7 +288,10 @@ class KPUnlockSpecDialog(QtWidgets.QDialog):
         self.buttons.button(QtWidgets.QDialogButtonBox.Ok).setEnabled(valid)
 
         if valid:
-            self.statusLabel.setText('Your input is valid.')
+            if language == 'eng':
+                self.statusLabel.setText('Your input is valid.')
+            elif language == 'jpn':
+                self.statusLabel.setText('適当な値が入力されました。')
         else:
             self.statusLabel.setText('[!] %s' % error)
 
