@@ -1,4 +1,5 @@
 from common import *
+from main import language
 import re
 
 def editableColourStr(array):
@@ -16,12 +17,20 @@ def colourFromNiceStr(thing):
     return None
 
 class KPWorldTableModel(QtCore.QAbstractTableModel):
-    FIELDS = ('Name', 'World ID', 'Track ID',
-            'FS Text 1', 'FS Text 2',
-            'FS Hint 1', 'FS Hint 2',
-            'HUD Text 1', 'HUD Text 2',
-            'HUD Hue', 'HUD Saturation', 'HUD Lightness',
-            'Title Level')
+    if language == 'eng':
+        FIELDS = ('Name', 'World ID', 'Track ID',
+                'FS Text 1', 'FS Text 2',
+                'FS Hint 1', 'FS Hint 2',
+                'HUD Text 1', 'HUD Text 2',
+                'HUD Hue', 'HUD Saturation', 'HUD Lightness',
+                'Title Level')
+    if language == 'jpn':
+        FIELDS = ('ワールド名', 'ワールドID', '曲ID',
+                'FS Text 1', 'FS Text 2',
+                'FS Hint 1', 'FS Hint 2',
+                'HUD Text 1', 'HUD Text 2',
+                'HUD色相', 'HUD彩度', 'HUD明度',
+                'タイトルステージ')
 
     def __init__(self, kpmap, parent=None):
         QtCore.QAbstractTableModel.__init__(self, parent)
