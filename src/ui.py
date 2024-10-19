@@ -3,6 +3,8 @@
 from common import *
 from editorui.editorcommon import *
 from editorui.editormain import *
+from main import language
+from main import appearance
 import os, copy
 import os.path
 import sys
@@ -129,9 +131,14 @@ class KPPathNodeList(QtWidgets.QWidget):
             self.loadLayer(layer)
 
     def setupToolbar(self, tb):
-        self.actAddFolder = tb.addAction(KP.icon('NewFolder'), 'Add Folder', self.addFolder)
-        self.actRemoveFolder = tb.addAction(KP.icon('DelFolder'), 'Remove Folder', self.removeFolder)
-        self.selectTileset = tb.addAction(KP.icon('LayerNewTile'), 'Select Tileset', self.setTileset)
+        if language == 'eng':
+            self.actAddFolder = tb.addAction(KP.icon('NewFolder'), 'Add Folder', self.addFolder)
+            self.actRemoveFolder = tb.addAction(KP.icon('DelFolder'), 'Remove Folder', self.removeFolder)
+            self.selectTileset = tb.addAction(KP.icon('LayerNewTile'), 'Select Tileset', self.setTileset)
+        if language == 'jpn':
+            self.actAddFolder = tb.addAction(KP.icon('NewFolder'), 'フォルダを追加', self.addFolder)
+            self.actRemoveFolder = tb.addAction(KP.icon('DelFolder'), 'フォルダを削除', self.removeFolder)
+            self.selectTileset = tb.addAction(KP.icon('LayerNewTile'), 'タイルセットを選択', self.setTileset)
 
     def handleRowChanged(self, currentItem, previousItem):
         currentIsNodeItem = isinstance(currentItem, self.KPPathNodeItem)
@@ -196,7 +203,10 @@ class KPPathNodeList(QtWidgets.QWidget):
 
         from dialogs import KPTilesetChooserDialog
 
-        tilesetName = KPTilesetChooserDialog.run('Choose a tileset for the %s layer:' % name)
+        if language == 'eng':
+            tilesetName = KPTilesetChooserDialog.run('Choose a tileset for the %s layer' % name)
+        if language == 'jpn':
+            tilesetName = KPTilesetChooserDialog.run('レイヤー %s のタイルセットを選択' % name)
         if tilesetName is None:
             return
 
@@ -212,7 +222,10 @@ class KPPathNodeList(QtWidgets.QWidget):
         if tileset:
             self.lastTileset = tileset
         elif dialog or not self.lastTileset:
-            tilesetName = KPTilesetChooserDialog.run('Choose a tileset for the %s layer:' % name)
+            if language == 'eng':
+                tilesetName = KPTilesetChooserDialog.run('Choose a tileset for the %s layer' % name)
+            if language == 'jpn':
+                tilesetName = KPTilesetChooserDialog.run('レイヤー %s のタイルセットを選択' % name)
             if tilesetName is None:
                 return False
 
@@ -375,12 +388,21 @@ class KPLayerList(QtWidgets.QWidget):
         self.setButtonStates()
 
     def setupToolbar(self, tb):
-        self.actAddTile = tb.addAction(KP.icon('LayerNewTile'), 'Add Tile Layer', self.addTileLayer)
-        self.actAddDoodad = tb.addAction(KP.icon('LayerNewObjects'), 'Add Doodad Layer', self.addDoodadLayer)
-        self.actRemove = tb.addAction(KP.icon('LayerRemove'), 'Remove', self.removeLayer)
-        self.actMoveUp = tb.addAction(QtGui.QIcon(), 'Move Up', self.moveUp)
-        self.actMoveDown = tb.addAction(QtGui.QIcon(), 'Move Down', self.moveDown)
-        self.actPlayPause = tb.addAction(KP.icon('APlay'), 'Play', self.toggleAnimatingScene)
+        if language == 'eng':
+            self.actAddTile = tb.addAction(KP.icon('LayerNewTile'), 'Add Tile Layer', self.addTileLayer)
+            self.actAddDoodad = tb.addAction(KP.icon('LayerNewObjects'), 'Add Doodad Layer', self.addDoodadLayer)
+            self.actRemove = tb.addAction(KP.icon('LayerRemove'), 'Remove', self.removeLayer)
+            self.actMoveUp = tb.addAction(QtGui.QIcon(), 'Move Up', self.moveUp)
+            self.actMoveDown = tb.addAction(QtGui.QIcon(), 'Move Down', self.moveDown)
+            self.actPlayPause = tb.addAction(KP.icon('APlay'), 'Play', self.toggleAnimatingScene)
+        if language == 'jpn':
+            self.actAddTile = tb.addAction(KP.icon('LayerNewTile'), 'レイヤーを追加', self.addTileLayer)
+            self.actAddDoodad = tb.addAction(KP.icon('LayerNewObjects'), '画像レイヤー', self.addDoodadLayer)
+            self.actRemove = tb.addAction(KP.icon('LayerRemove'), '削除', self.removeLayer)
+            self.actMoveUp = tb.addAction(QtGui.QIcon(), '上へ移動', self.moveUp)
+            self.actMoveDown = tb.addAction(QtGui.QIcon(), '下へ移動', self.moveDown)
+            self.actPlayPause = tb.addAction(KP.icon('APlay'), '再生', self.toggleAnimatingScene)
+
 
     def toggleAnimatingScene(self):
         self.playPaused.emit()
@@ -429,7 +451,10 @@ class KPLayerList(QtWidgets.QWidget):
     def addTileLayer(self):
         from dialogs import KPTilesetChooserDialog
 
-        tilesetName = KPTilesetChooserDialog.run('Choose a tileset for the new layer:')
+        if language == 'eng':
+            tilesetName = KPTilesetChooserDialog.run('Choose a tileset for the new layer')
+        if language == 'jpn':
+            tilesetName = KPTilesetChooserDialog.run('新規レイヤーのタイルセットを選択')
         if tilesetName is None:
             return
 
@@ -510,8 +535,12 @@ class KPDoodadSelector(QtWidgets.QWidget):
 
         self.toolbar = QtWidgets.QToolBar()
 
-        self.addDoodadButton = self.toolbar.addAction(QtGui.QIcon(), 'Add', self.addDoodadFromFile)
-        self.removeDoodadButton = self.toolbar.addAction(QtGui.QIcon(), 'Remove', self.removeDoodad)
+        if language == 'eng':
+            self.addDoodadButton = self.toolbar.addAction(QtGui.QIcon(), 'Add', self.addDoodadFromFile)
+            self.removeDoodadButton = self.toolbar.addAction(QtGui.QIcon(), 'Remove', self.removeDoodad)
+        if language == 'jpn':
+            self.addDoodadButton = self.toolbar.addAction(QtGui.QIcon(), '追加', self.addDoodadFromFile)
+            self.removeDoodadButton = self.toolbar.addAction(QtGui.QIcon(), '削除', self.removeDoodad)
 
         self.updateModel()
 
@@ -535,11 +564,18 @@ class KPDoodadSelector(QtWidgets.QWidget):
                 return
 
             # TODO: Check if selected
-            msgBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning,
+            if language == 'eng':
+                msgBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning,
                     "Delete Doodad?", "Are you sure you want to delete this doodad? This action cannot be undone.",
                     QtWidgets.QMessageBox.NoButton, self)
-            msgBox.addButton("Delete", QtWidgets.QMessageBox.AcceptRole)
-            msgBox.addButton("Cancel", QtWidgets.QMessageBox.RejectRole)
+                msgBox.addButton("Delete", QtWidgets.QMessageBox.AcceptRole)
+                msgBox.addButton("Cancel", QtWidgets.QMessageBox.RejectRole)
+            if language == 'jpn':
+                msgBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning,
+                    "画像の削除", "本当に画像を削除しますか？このアクションは取り消せません。",
+                    QtWidgets.QMessageBox.NoButton, self)
+                msgBox.addButton("削除", QtWidgets.QMessageBox.AcceptRole)
+                msgBox.addButton("キャンセル", QtWidgets.QMessageBox.RejectRole)
             if msgBox.exec_() == QtWidgets.QMessageBox.AcceptRole:
                 KP.map.removeDoodad(doodad)
 
@@ -562,9 +598,10 @@ class KPDoodadSelector(QtWidgets.QWidget):
     def addDoodadFromFile(self):
         """Asks the user for files to load in as doodads."""
 
-        files = QFileDialog_getOpenFileNames(self,
-                "Choose an image or several image files.", "",
-                "Images (*.png *.jpeg *.jpg *.bmp)")
+        if language == 'eng':
+            files = QFileDialog_getOpenFileNames(self, "Choose an image or several image files.", "", "Images (*.png *.jpeg *.jpg *.bmp)")
+        if language == 'jpn':
+            files = QFileDialog_getOpenFileNames(self, "画像ファイルを選択", "", "画像（*.png *.jpeg *.jpg *.bmp）")
 
         if files:
             for image in files:
@@ -753,10 +790,14 @@ class KPAnmOptions(QtWidgets.QWidget):
     class AnmDelegate(QtWidgets.QStyledItemDelegate):
 
         def createEditor(self, parent, option, index):
-
-            loop = ["Contiguous", "Loop", "Reversible Loop"]
-            interp = ["Linear", "Sinusoidial", "Cosinoidial"]
-            anmType = ["X Position", "Y Position", "Angle", "X Scale", "Y Scale", "Opacity"]
+            if language == 'eng':
+                loop = ["Contiguous", "Loop", "Reversible Loop"]
+                interp = ["Linear", "Sinusoidial", "Cosinoidial"]
+                anmType = ["X Position", "Y Position", "Angle", "X Scale", "Y Scale", "Opacity"]
+            if language == 'jpn':
+                loop = ["連続", "ループ", "反復"]
+                interp = ["等速度", "sin波", "cos波"]
+                anmType = ["位置x", "位置y", "回転", "大きさx", "大きさy", "透明度"]
 
             thing = index.data(Qt.DisplayRole)
             thong = index.data(Qt.EditRole)
@@ -871,7 +912,10 @@ class KPAnmOptions(QtWidgets.QWidget):
         delegate = self.AnmDelegate()
         self.anmTable.setItemDelegate(delegate)
 
-        self.model.setHorizontalHeaderLabels(["Looping", "Interpolation", "Frame Len", "Type", "Start Value", "End Value", "Delay", "Delay Offset"])
+        if language == 'eng':
+            self.model.setHorizontalHeaderLabels(["Looping", "Interpolation", "Frame Len", "Type", "Start Value", "End Value", "Delay", "Delay Offset"])
+        if language == 'jpn':
+            self.model.setHorizontalHeaderLabels(["ループ", "移動方法", "フレーム数", "タイプ", "開始値", "終了値", "遅延", "遅延オフセット"])
         self.anmTable.setColumnWidth(0, 150)
         self.anmTable.setColumnWidth(1, 100)
         self.anmTable.setColumnWidth(2, 65)
@@ -890,11 +934,18 @@ class KPAnmOptions(QtWidgets.QWidget):
         # Add/Remove Animation Buttons
         addbutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/Plus.png"), "")
         rembutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/Minus.png"), "")
-        presetbutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/AddPreset.png"), "Add Preset")
-        newpbutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/NewPreset.png"), "New Preset")
-        # savebutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/SavePreset.png"), "Save")
-        # loadbutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/LoadPreset.png"), "Load")
-        # clearbutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/ClearPreset.png"), "Clear")
+        if language == 'eng':
+            presetbutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/AddPreset.png"), "Add Preset")
+            newpbutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/NewPreset.png"), "New Preset")
+            # savebutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/SavePreset.png"), "Save")
+            # loadbutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/LoadPreset.png"), "Load")
+            # clearbutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/ClearPreset.png"), "Clear")
+        if language == 'jpn':
+            presetbutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/AddPreset.png"), "プリセットを追加")
+            newpbutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/NewPreset.png"), "新規プリセット")
+            # savebutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/SavePreset.png"), "保存")
+            # loadbutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/LoadPreset.png"), "読み込み")
+            # clearbutton = QtWidgets.QPushButton(QtGui.QIcon("Resources/ClearPreset.png"), "消去")
         BottomLayout.addWidget(addbutton, 1, 0, 1, 1)
         BottomLayout.addWidget(rembutton, 1, 1, 1, 1)
         BottomLayout.addWidget(QtWidgets.QLabel(""), 1, 2, 1, 2)
@@ -965,17 +1016,24 @@ class KPAnmOptions(QtWidgets.QWidget):
         itemD.setData(0, QtCore.Qt.EditRole)
         itemE.setData(0, QtCore.Qt.EditRole)
 
-        self.model.appendRow([QtGui.QStandardItem("Contiguous"), QtGui.QStandardItem("Linear"),
-                              itemA, QtGui.QStandardItem("X Position"),
-                              itemB, itemC, itemD, itemE])
+        if language == 'eng':
+            self.model.appendRow([QtGui.QStandardItem("Contiguous"), QtGui.QStandardItem("Linear"),
+                                itemA, QtGui.QStandardItem("X Position"),
+                                itemB, itemC, itemD, itemE])
+        if language == 'jpn':
+            self.model.appendRow([QtGui.QStandardItem("連続"), QtGui.QStandardItem("等速度"),
+                                itemA, QtGui.QStandardItem("位置x"),
+                                itemB, itemC, itemD, itemE])
 
     def remAnmItem(self):
 
         if self.model.rowCount() == 0:
             return
 
-        rowNum, ok = QtWidgets.QInputDialog.getInt(self,
-                "Select A Row", "Delete This Row:", 0, 0, self.model.rowCount(), 1)
+        if language == 'eng':
+            rowNum, ok = QtWidgets.QInputDialog.getInt(self, "Select A Row", "Delete This Row:", 0, 0, self.model.rowCount(), 1)
+        if language == 'jpn':
+            rowNum, ok = QtWidgets.QInputDialog.getInt(self, "行を選択", "削除する行：", 0, 0, self.model.rowCount(), 1)
         if ok:
             self.model.removeRows(rowNum, 1)
 
@@ -1011,7 +1069,10 @@ class KPAnmOptions(QtWidgets.QWidget):
     def addToPreset(self):
         from dialogs import getTextDialog
 
-        name = getTextDialog('Add to Presets', 'Enter a name for the preset:')
+        if language == 'eng':
+            name = getTextDialog('Add to Presets', 'Enter a name for the preset:')
+        if language == 'jpn':
+            name = getTextDialog('プリセットを追加', 'プリセットの名前を入力：')
         if name is None:
             print('Returning')
             return
@@ -1078,7 +1139,10 @@ class KPAnmOptions(QtWidgets.QWidget):
                 shouldRestartAnims = True
 
         model.clear()
-        self.model.setHorizontalHeaderLabels(["Looping", "Interpolation", "Frame Len", "Type", "Start Value", "End Value", "Delay", "Delay Offset"])
+        if language == 'eng':
+            self.model.setHorizontalHeaderLabels(["Looping", "Interpolation", "Frame Len", "Type", "Start Value", "End Value", "Delay", "Delay Offset"])
+        if language == 'jpn':
+            self.model.setHorizontalHeaderLabels(["ループ", "移動方法", "フレーム数", "タイプ", "開始値", "終了値", "遅延", "遅延オフセット"])
         self._doodadRef = None
         self.doodadList = None
 
@@ -1092,6 +1156,7 @@ class KPMainWindow(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self)
 
         self.setWindowTitle('Koopatlas')
+        self.setWindowIcon(QtGui.QIcon('Resources/Koopatlas.png'))
         self.setIconSize(QtCore.QSize(16, 16))
 
         self.scene = KPMapScene()
@@ -1126,119 +1191,242 @@ class KPMainWindow(QtWidgets.QMainWindow):
 
         QKeySequence = QtGui.QKeySequence
 
-        f = mb.addMenu('&File')
-        self.fa = f.addAction('New',                        self.newMap, QKeySequence("Ctrl+N"))
-        self.fb = f.addAction('Open...',                    self.openMap, QKeySequence("Ctrl+O"))
-        self.fc = f.addAction('Open Recent')                #
-        f.addSeparator()
-        self.fd = f.addAction('Save',                       self.saveMap, QKeySequence("Ctrl+S"))
-        self.fe = f.addAction('Save As...',                 self.saveMapAs, QKeySequence("Ctrl+Shift+S"))
-        self.ff = f.addAction('Export...',                  self.exportMap, QKeySequence("Ctrl+E"))
-        self.fj = f.addAction('Batch...',                   self.batchSave, QKeySequence("Ctrl+Shift+E"))
-        f.addSeparator()
-        self.fg = f.addAction('Take Screenshot...',         self.screenshot, QKeySequence("Ctrl+Alt+S"))
-        self.fh = f.addAction('Export Doodads...',          self.exportDoodads, QKeySequence("Ctrl+Alt+Shift+D"))
-        f.addSeparator()
-        # self.fi = f.addAction('Quit')
+        if language == 'eng':
+            f = mb.addMenu('&File')
+            self.fa = f.addAction('New',                        self.newMap, QKeySequence("Ctrl+N"))
+            self.fb = f.addAction('Open...',                    self.openMap, QKeySequence("Ctrl+O"))
+            self.fc = f.addAction('Open Recent')                #
+            f.addSeparator()
+            self.fd = f.addAction('Save',                       self.saveMap, QKeySequence("Ctrl+S"))
+            self.fe = f.addAction('Save As...',                 self.saveMapAs, QKeySequence("Ctrl+Shift+S"))
+            self.ff = f.addAction('Export...',                  self.exportMap, QKeySequence("Ctrl+E"))
+            self.fj = f.addAction('Batch...',                   self.batchSave, QKeySequence("Ctrl+Shift+E"))
+            f.addSeparator()
+            self.fg = f.addAction('Take Screenshot...',         self.screenshot, QKeySequence("Ctrl+Alt+S"))
+            self.fh = f.addAction('Export Doodads...',          self.exportDoodads, QKeySequence("Ctrl+Alt+Shift+D"))
+            f.addSeparator()
+            self.fi = f.addAction('Quit',                       self.Qooitlas, QKeySequence("Ctrl+Q"))
 
-        e = mb.addMenu('Edit')
-        self.ea = e.addAction('Copy',                       self.copy, QKeySequence.Copy)
-        self.eb = e.addAction('Cut')                        # X
-        self.ec = e.addAction('Paste',                      self.paste, QKeySequence.Paste)
-        e.addSeparator()
-        self.ed = e.addAction('Select All',                 self.selectAll, QKeySequence.SelectAll)
-        self.ee = e.addAction('Deselect',                   self.deSelect, QKeySequence("Ctrl+D"))
+            e = mb.addMenu('Edit')
+            self.ea = e.addAction('Copy',                       self.copy, QKeySequence.Copy)
+            self.eb = e.addAction('Cut')                        # X
+            self.ec = e.addAction('Paste',                      self.paste, QKeySequence.Paste)
+            e.addSeparator()
+            self.ed = e.addAction('Select All',                 self.selectAll, QKeySequence.SelectAll)
+            self.ee = e.addAction('Deselect',                   self.deSelect, QKeySequence("Ctrl+D"))
 
-        l = mb.addMenu('Layers')
-        self.la = l.addAction('Add Tileset Layer',          self.layerList.addTileLayer, QKeySequence("Ctrl+T"))
-        self.lb = l.addAction('Add Doodad Layer',           self.layerList.addDoodadLayer, QKeySequence("Ctrl+R"))
-        self.lc = l.addAction('Remove Layer',               self.layerList.removeLayer, QKeySequence("Ctrl+Del"))
-        l.addSeparator()
-        self.ld = l.addAction('Move Layer Up',              self.layerList.moveUp, QKeySequence("Ctrl+Up"))
-        self.le = l.addAction('Move Layer Down',            self.layerList.moveDown, QKeySequence("Ctrl+Down"))
-        self.lf = l.addAction('Move Layer to Top',          self.layerList.moveTop, QKeySequence("Ctrl+Shift+Up"))
-        self.lg = l.addAction('Move Layer to Bottom',       self.layerList.moveBottom, QKeySequence("Ctrl+Shift+Down"))
-        l.addSeparator()
-        self.li = l.addAction('Add Doodad...',              self.doodadSelector.addDoodadFromFile, QKeySequence("Ctrl+Shift+R"))
-        self.lh = l.addAction('Add Tileset...',             self.moveTilesetToFolder, QKeySequence("Ctrl+Shift+T"))
-        self.lj = l.addAction('Change Tileset...',          self.changeTileset, QKeySequence("Ctrl+Shift+Alt+T"))
+            l = mb.addMenu('Layers')
+            self.la = l.addAction('Add Tileset Layer',          self.layerList.addTileLayer, QKeySequence("Ctrl+T"))
+            self.lb = l.addAction('Add Doodad Layer',           self.layerList.addDoodadLayer, QKeySequence("Ctrl+R"))
+            self.lc = l.addAction('Remove Layer',               self.layerList.removeLayer, QKeySequence("Ctrl+Del"))
+            l.addSeparator()
+            self.ld = l.addAction('Move Layer Up',              self.layerList.moveUp, QKeySequence("Ctrl+Up"))
+            self.le = l.addAction('Move Layer Down',            self.layerList.moveDown, QKeySequence("Ctrl+Down"))
+            self.lf = l.addAction('Move Layer to Top',          self.layerList.moveTop, QKeySequence("Ctrl+Shift+Up"))
+            self.lg = l.addAction('Move Layer to Bottom',       self.layerList.moveBottom, QKeySequence("Ctrl+Shift+Down"))
+            l.addSeparator()
+            self.li = l.addAction('Add Doodad...',              self.doodadSelector.addDoodadFromFile, QKeySequence("Ctrl+Shift+R"))
+            self.lh = l.addAction('Add Tileset...',             self.moveTilesetToFolder, QKeySequence("Ctrl+Shift+T"))
+            self.lj = l.addAction('Change Tileset...',          self.changeTileset, QKeySequence("Ctrl+Shift+Alt+T"))
 
-        a = mb.addMenu('Animate')
-        self.aa = a.addAction('Play Animations',            self.playAnim, QKeySequence("Ctrl+P"))
-        self.ac = a.addAction('Reset Animations',           self.resetAnim, QKeySequence("Ctrl+Shift+P"))
-        a.addSeparator()
-        self.ad = a.addAction('Load Animation Presets...',  self.loadAnimPresets)
-        self.ae = a.addAction('Save Animation Presets...',  self.saveAnimPresets)
-        self.af = a.addAction('Clear Animation Presets',    self.clearAnimPresets)
+            a = mb.addMenu('Animate')
+            self.aa = a.addAction('Play Animations',            self.playAnim, QKeySequence("Ctrl+P"))
+            self.ac = a.addAction('Reset Animations',           self.resetAnim, QKeySequence("Ctrl+Shift+P"))
+            a.addSeparator()
+            self.ad = a.addAction('Load Animation Presets...',  self.loadAnimPresets)
+            self.ae = a.addAction('Save Animation Presets...',  self.saveAnimPresets)
+            self.af = a.addAction('Clear Animation Presets',    self.clearAnimPresets)
 
-        m = mb.addMenu('Map')
-        self.ma = m.addAction('Set Background...',          self.setMapBackground)
-        self.ma = m.addAction('World Editor...',            self.showWorldEditor)
+            m = mb.addMenu('Map')
+            self.ma = m.addAction('Set Background...',          self.setMapBackground)
+            self.ma = m.addAction('World Editor...',            self.showWorldEditor)
 
-        w = mb.addMenu('Window')
-        self.wa = w.addAction('Show Grid',                  self.showGrid, QKeySequence("Ctrl+G"))
-        self.wa.setCheckable(True)
-        w.addSeparator()
-        self.wb = w.addAction('Zoom In',                    self.ZoomIn, QKeySequence.ZoomIn)
-        self.wc = w.addAction('Zoom Out',                   self.ZoomOut, QKeySequence.ZoomOut)
-        self.wd = w.addAction('Actual Size',                self.ZoomActual, QKeySequence("Ctrl+="))
-        self.wh = w.addAction('Show Wii Zoom',              self.showWiiZoom, QKeySequence("Ctrl+F"))
-        self.wh.setCheckable(True)
-        w.addSeparator()
+            w = mb.addMenu('Window')
+            self.wa = w.addAction('Show Grid',                  self.showGrid, QKeySequence("Ctrl+G"))
+            self.wa.setCheckable(True)
+            w.addSeparator()
+            self.wb = w.addAction('Zoom In',                    self.ZoomIn, QKeySequence.ZoomIn)
+            self.wc = w.addAction('Zoom Out',                   self.ZoomOut, QKeySequence.ZoomOut)
+            self.wd = w.addAction('Actual Size',                self.ZoomActual, QKeySequence("Ctrl+="))
+            self.wh = w.addAction('Show Wii Zoom',              self.showWiiZoom, QKeySequence("Ctrl+F"))
+            self.wh.setCheckable(True)
+            w.addSeparator()
+            self.wd = w.addAction('Language setting',           self.LanguageSetting)
+            self.wh = w.addAction('Appearance',                 self.AppearanceSetting)
+            w.addSeparator()
 
-        layerAction = self.layerListDock.toggleViewAction()
-        layerAction.setShortcut(QKeySequence("Ctrl+1"))
-        w.addAction(layerAction)
+            layerAction = self.layerListDock.toggleViewAction()
+            layerAction.setShortcut(QKeySequence("Ctrl+1"))
+            w.addAction(layerAction)
 
-        objectAction = self.objectSelectorDock.toggleViewAction()
-        objectAction.setShortcut(QKeySequence("Ctrl+2"))
-        w.addAction(objectAction)
+            objectAction = self.objectSelectorDock.toggleViewAction()
+            objectAction.setShortcut(QKeySequence("Ctrl+2"))
+            w.addAction(objectAction)
 
-        doodadAction = self.doodadSelectorDock.toggleViewAction()
-        doodadAction.setShortcut(QKeySequence("Ctrl+3"))
-        w.addAction(doodadAction)
+            doodadAction = self.doodadSelectorDock.toggleViewAction()
+            doodadAction.setShortcut(QKeySequence("Ctrl+3"))
+            w.addAction(doodadAction)
 
-        h = mb.addMenu('Help')
-        self.ha = h.addAction('About Koopatlas',            self.aboutDialog)
-        self.hb = h.addAction('Koopatlas Documentation',    self.goToHelp)
-        # self.hc = h.addAction('Keyboard Shortcuts')
+            h = mb.addMenu('Help')
+            self.ha = h.addAction('About Koopatlas',            self.aboutDialog)
+            self.hb = h.addAction('Koopatlas Documentation',    self.goToHelp)
+            # self.hc = h.addAction('Keyboard Shortcuts')
+
+        if language == 'jpn':
+            f = mb.addMenu('&ファイル')
+            self.fa = f.addAction('新規作成',                   self.newMap, QKeySequence("Ctrl+N"))
+            self.fb = f.addAction('開く',                       self.openMap, QKeySequence("Ctrl+O"))
+            self.fc = f.addAction('最近のファイルを開く')                #
+            f.addSeparator()
+            self.fd = f.addAction('保存',                       self.saveMap, QKeySequence("Ctrl+S"))
+            self.fe = f.addAction('名前を付けて保存',           self.saveMapAs, QKeySequence("Ctrl+Shift+S"))
+            self.ff = f.addAction('エクスポート',               self.exportMap, QKeySequence("Ctrl+E"))
+            self.fj = f.addAction('Batch...',                   self.batchSave, QKeySequence("Ctrl+Shift+E"))
+            f.addSeparator()
+            self.fg = f.addAction('スクリーンショットを撮影',   self.screenshot, QKeySequence("Ctrl+Alt+S"))
+            self.fh = f.addAction('画像をエクスポート',         self.exportDoodads, QKeySequence("Ctrl+Alt+Shift+D"))
+            f.addSeparator()
+            self.fi = f.addAction('閉じる',                     self.Qooitlas, QKeySequence("Ctrl+Q"))
+
+            e = mb.addMenu('編集')
+            self.ea = e.addAction('コピー',                     self.copy, QKeySequence.Copy)
+            self.eb = e.addAction('切り取り')                   # X
+            self.ec = e.addAction('貼り付け',                   self.paste, QKeySequence.Paste)
+            e.addSeparator()
+            self.ed = e.addAction('全て選択',                   self.selectAll, QKeySequence.SelectAll)
+            self.ee = e.addAction('選択解除',                   self.deSelect, QKeySequence("Ctrl+D"))
+
+            l = mb.addMenu('レイヤー')
+            self.la = l.addAction('タイルセットレイヤーを追加', self.layerList.addTileLayer, QKeySequence("Ctrl+T"))
+            self.lb = l.addAction('画像レイヤーを追加',         self.layerList.addDoodadLayer, QKeySequence("Ctrl+R"))
+            self.lc = l.addAction('レイヤーを削除',             self.layerList.removeLayer, QKeySequence("Ctrl+Del"))
+            l.addSeparator()
+            self.ld = l.addAction('レイヤーを上に移動',         self.layerList.moveUp, QKeySequence("Ctrl+Up"))
+            self.le = l.addAction('レイヤーを下に移動',         self.layerList.moveDown, QKeySequence("Ctrl+Down"))
+            self.lf = l.addAction('レイヤーを最上層に移動',     self.layerList.moveTop, QKeySequence("Ctrl+Shift+Up"))
+            self.lg = l.addAction('レイヤーを最下層に移動',     self.layerList.moveBottom, QKeySequence("Ctrl+Shift+Down"))
+            l.addSeparator()
+            self.li = l.addAction('画像を追加',                 self.doodadSelector.addDoodadFromFile, QKeySequence("Ctrl+Shift+R"))
+            self.lh = l.addAction('タイルセットを追加',         self.moveTilesetToFolder, QKeySequence("Ctrl+Shift+T"))
+            self.lj = l.addAction('タイルセットを変更',         self.changeTileset, QKeySequence("Ctrl+Shift+Alt+T"))
+
+            a = mb.addMenu('アニメーション')
+            self.aa = a.addAction('再生',                       self.playAnim, QKeySequence("Ctrl+P"))
+            self.ac = a.addAction('リセット',                   self.resetAnim, QKeySequence("Ctrl+Shift+P"))
+            a.addSeparator()
+            self.ad = a.addAction('プリセットを読み込む',       self.loadAnimPresets)
+            self.ae = a.addAction('プリセットを保存',           self.saveAnimPresets)
+            self.af = a.addAction('プリセットを消去',           self.clearAnimPresets)
+
+            m = mb.addMenu('マップ')
+            self.ma = m.addAction('背景設定',                   self.setMapBackground)
+            self.ma = m.addAction('ワールドエディタを開く',     self.showWorldEditor)
+
+            w = mb.addMenu('表示')
+            self.wa = w.addAction('グリッド線を表示',           self.showGrid, QKeySequence("Ctrl+G"))
+            self.wa.setCheckable(True)
+            w.addSeparator()
+            self.wb = w.addAction('ズームイン',                 self.ZoomIn, QKeySequence.ZoomIn)
+            self.wc = w.addAction('ズームアウト',               self.ZoomOut, QKeySequence.ZoomOut)
+            self.wd = w.addAction('ズームリセット',             self.ZoomActual, QKeySequence("Ctrl+="))
+            self.wh = w.addAction('Wiiの画面サイズを表示',      self.showWiiZoom, QKeySequence("Ctrl+F"))
+            self.wh.setCheckable(True)
+            w.addSeparator()
+            self.wd = w.addAction('表示言語（Language）',       self.LanguageSetting)
+            self.wh = w.addAction('外観',                       self.AppearanceSetting)
+            w.addSeparator()
+
+            layerAction = self.layerListDock.toggleViewAction()
+            layerAction.setShortcut(QKeySequence("Ctrl+1"))
+            w.addAction(layerAction)
+
+            objectAction = self.objectSelectorDock.toggleViewAction()
+            objectAction.setShortcut(QKeySequence("Ctrl+2"))
+            w.addAction(objectAction)
+
+            doodadAction = self.doodadSelectorDock.toggleViewAction()
+            doodadAction.setShortcut(QKeySequence("Ctrl+3"))
+            w.addAction(doodadAction)
+
+            h = mb.addMenu('ヘルプ')
+            self.ha = h.addAction('Koopatlasについて',          self.aboutDialog)
+            self.hb = h.addAction('Koopatlasの使い方',          self.goToHelp)
+            # self.hc = h.addAction('Keyboard Shortcuts')
 
     def setupDocks(self):
-        self.layerList = KPLayerList()
-        self.layerListDock = QtWidgets.QDockWidget('Layers')
-        self.layerListDock.setWidget(self.layerList)
+        if language == 'eng':
+            self.layerList = KPLayerList()
+            self.layerListDock = QtWidgets.QDockWidget('Layers')
+            self.layerListDock.setWidget(self.layerList)
 
-        self.layerList.selectedLayerChanged.connect(self.handleSelectedLayerChanged)
-        self.layerList.playPaused.connect(self.playAnim)
+            self.layerList.selectedLayerChanged.connect(self.handleSelectedLayerChanged)
+            self.layerList.playPaused.connect(self.playAnim)
 
-        self.pathNodeList = KPPathNodeList()
-        self.pathNodeDock = QtWidgets.QDockWidget('Path/Node Layers')
-        self.pathNodeDock.setWidget(self.pathNodeList)
-        self.pathNodeList.selectedLayerChanged.connect(self.handleSelectedPathNodeLayerChanged)
-        self.pathNodeList.layerClicked.connect(self.handleSelectedPathNodeLayerChanged)
+            self.pathNodeList = KPPathNodeList()
+            self.pathNodeDock = QtWidgets.QDockWidget('Path/Node Layers')
+            self.pathNodeDock.setWidget(self.pathNodeList)
+            self.pathNodeList.selectedLayerChanged.connect(self.handleSelectedPathNodeLayerChanged)
+            self.pathNodeList.layerClicked.connect(self.handleSelectedPathNodeLayerChanged)
 
-        self.objectSelector = KPObjectSelector()
-        self.objectSelector.objChanged.connect(self.handleSelectedObjectChanged)
+            self.objectSelector = KPObjectSelector()
+            self.objectSelector.objChanged.connect(self.handleSelectedObjectChanged)
 
-        self.objectSelectorDock = QtWidgets.QDockWidget('Objects')
-        self.objectSelectorDock.setWidget(self.objectSelector)
-        self.objectSelectorDock.hide()
+            self.objectSelectorDock = QtWidgets.QDockWidget('Objects')
+            self.objectSelectorDock.setWidget(self.objectSelector)
+            self.objectSelectorDock.hide()
 
-        self.doodadSelector = KPDoodadSelector()
-        self.doodadSelector.selectedDoodadChanged.connect(self.handleSelectedDoodadChanged)
+            self.doodadSelector = KPDoodadSelector()
+            self.doodadSelector.selectedDoodadChanged.connect(self.handleSelectedDoodadChanged)
 
-        self.doodadSelectorDock = QtWidgets.QDockWidget('Doodads')
-        self.doodadSelectorDock.setWidget(self.doodadSelector)
-        self.doodadSelectorDock.hide()
+            self.doodadSelectorDock = QtWidgets.QDockWidget('Doodads')
+            self.doodadSelectorDock.setWidget(self.doodadSelector)
+            self.doodadSelectorDock.hide()
 
-        self.anmOpts = KPAnmOptions()
-        self.editor.userClick.connect(self.anmPopulate)
+            self.anmOpts = KPAnmOptions()
+            self.editor.userClick.connect(self.anmPopulate)
 
-        self.anmOptsDock = QtWidgets.QDockWidget('Doodad Animations')
-        self.anmOptsDock.setWidget(self.anmOpts)
-        self.anmOptsDock.setAllowedAreas(Qt.BottomDockWidgetArea | Qt.TopDockWidgetArea)
-        self.anmOptsDock.setFeatures(self.anmOptsDock.DockWidgetVerticalTitleBar | self.anmOptsDock.DockWidgetMovable | self.anmOptsDock.DockWidgetFloatable)
-        self.anmOptsDock.hide()
+            self.anmOptsDock = QtWidgets.QDockWidget('Doodad Animations')
+            self.anmOptsDock.setWidget(self.anmOpts)
+            self.anmOptsDock.setAllowedAreas(Qt.BottomDockWidgetArea | Qt.TopDockWidgetArea)
+            self.anmOptsDock.setFeatures(self.anmOptsDock.DockWidgetVerticalTitleBar | self.anmOptsDock.DockWidgetMovable | self.anmOptsDock.DockWidgetFloatable)
+            self.anmOptsDock.hide()
+
+        if language == 'jpn':
+            self.layerList = KPLayerList()
+            self.layerListDock = QtWidgets.QDockWidget('レイヤー')
+            self.layerListDock.setWidget(self.layerList)
+
+            self.layerList.selectedLayerChanged.connect(self.handleSelectedLayerChanged)
+            self.layerList.playPaused.connect(self.playAnim)
+
+            self.pathNodeList = KPPathNodeList()
+            self.pathNodeDock = QtWidgets.QDockWidget('道のレイヤー')
+            self.pathNodeDock.setWidget(self.pathNodeList)
+            self.pathNodeList.selectedLayerChanged.connect(self.handleSelectedPathNodeLayerChanged)
+            self.pathNodeList.layerClicked.connect(self.handleSelectedPathNodeLayerChanged)
+
+            self.objectSelector = KPObjectSelector()
+            self.objectSelector.objChanged.connect(self.handleSelectedObjectChanged)
+
+            self.objectSelectorDock = QtWidgets.QDockWidget('オブジェクト')
+            self.objectSelectorDock.setWidget(self.objectSelector)
+            self.objectSelectorDock.hide()
+
+            self.doodadSelector = KPDoodadSelector()
+            self.doodadSelector.selectedDoodadChanged.connect(self.handleSelectedDoodadChanged)
+
+            self.doodadSelectorDock = QtWidgets.QDockWidget('画像')
+            self.doodadSelectorDock.setWidget(self.doodadSelector)
+            self.doodadSelectorDock.hide()
+
+            self.anmOpts = KPAnmOptions()
+            self.editor.userClick.connect(self.anmPopulate)
+
+            self.anmOptsDock = QtWidgets.QDockWidget('画像アニメーション')
+            self.anmOptsDock.setWidget(self.anmOpts)
+            self.anmOptsDock.setAllowedAreas(Qt.BottomDockWidgetArea | Qt.TopDockWidgetArea)
+            self.anmOptsDock.setFeatures(self.anmOptsDock.DockWidgetVerticalTitleBar | self.anmOptsDock.DockWidgetMovable | self.anmOptsDock.DockWidgetFloatable)
+            self.anmOptsDock.hide()
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.layerListDock)
         self.addDockWidget(Qt.RightDockWidgetArea, self.pathNodeDock)
@@ -1276,7 +1464,10 @@ class KPMainWindow(QtWidgets.QMainWindow):
     def updateTitlebar(self):
         path = KP.map.filePath
         if path is None:
-            effectiveName = 'Untitled Map'
+            if language == 'eng':
+                effectiveName = 'Untitled Map'
+            if language == 'jpn':
+                effectiveName = '未保存のマップ'
         else:
             effectiveName = os.path.basename(path)
 
@@ -1349,7 +1540,10 @@ class KPMainWindow(QtWidgets.QMainWindow):
         selection = self.scene.selectedItems()
         if len(selection) == 0:
             self.anmOpts.resolveAnmList()
-            self.anmOptsDock.setWindowTitle("No Doodads Selected")
+            if language == 'eng':
+                self.anmOptsDock.setWindowTitle("No Doodads Selected")
+            if language == 'jpn':
+                self.anmOptsDock.setWindowTitle("画像が選択されていません")
             return
 
         doodadList = []
@@ -1361,13 +1555,19 @@ class KPMainWindow(QtWidgets.QMainWindow):
         self.anmOpts.resolveAnmList()
 
         if len(doodadList) == 0:
-            self.anmOptsDock.setWindowTitle("No Doodads Selected")
+            if language == 'eng':
+                self.anmOptsDock.setWindowTitle("No Doodads Selected")
+            if language == 'jpn':
+                self.anmOptsDock.setWindowTitle("未選択")
             return
 
         suffix = ''
         if len(doodadList) > 1:
             suffix = 's'
-        self.anmOptsDock.setWindowTitle("Editing {0} Doodad{1}".format(len(doodadList), suffix))
+        if language == 'eng':
+            self.anmOptsDock.setWindowTitle("Editing {0} Doodad{1}".format(len(doodadList), suffix))
+        if language == 'jpn':
+            self.anmOptsDock.setWindowTitle("編集中 {0} 画像{1}".format(len(doodadList), suffix))
         self.anmOpts.setupAnms(doodadList)
 
 
@@ -1386,8 +1586,10 @@ class KPMainWindow(QtWidgets.QMainWindow):
     def openMap(self):
         if self.checkDirty(): return
 
-        target = unicode(QFileDialog_getOpenFileName(
-            self, 'Open Map', '', 'Koopatlas map (*.kpmap)'))
+        if language == 'eng':
+            target = unicode(QFileDialog_getOpenFileName(self, 'Open Map', '', 'Koopatlas map (*.kpmap)'))
+        if language == 'jpn':
+            target = unicode(QFileDialog_getOpenFileName(self, 'マップを開く', '', 'Koopatlas map (*.kpmap)'))
 
         if len(target) == 0:
             return
@@ -1405,8 +1607,10 @@ class KPMainWindow(QtWidgets.QMainWindow):
 
         if target is None or forceNewName:
             dialogDir = '' if target is None else os.path.dirname(target)
-            target = unicode(QFileDialog_getSaveFileName(
-                    self, 'Save Map', dialogDir, 'Koopatlas map (*.kpmap)'))
+            if language == 'eng':
+                target = unicode(QFileDialog_getSaveFileName(self, 'Save Map', dialogDir, 'Koopatlas map (*.kpmap)'))
+            if language == 'jpn':
+                target = unicode(QFileDialog_getSaveFileName(self, '名前を付けて保存', dialogDir, 'Koopatlas map (*.kpmap)'))
 
             if len(target) == 0:
                 return
@@ -1423,8 +1627,10 @@ class KPMainWindow(QtWidgets.QMainWindow):
         target = KP.map.filePath
 
         dialogDir = '' if target is None else os.path.dirname(target)
-        target = unicode(QFileDialog_getSaveFileName(
-                self, 'Export Map', dialogDir, 'Koopatlas binary map (*.kpbin)'))
+        if language== 'eng':
+            target = unicode(QFileDialog_getSaveFileName(self, 'Export Map', dialogDir, 'Koopatlas binary map (*.kpbin)'))
+        if language== 'jpn':
+            target = unicode(QFileDialog_getSaveFileName(self, 'マップを出力', dialogDir, 'Koopatlas binary map (*.kpbin)'))
 
         if len(target) == 0:
             return
@@ -1432,37 +1638,66 @@ class KPMainWindow(QtWidgets.QMainWindow):
         KP.map.export(target)
 
     def screenshot(self):
-        items = ("Current Window", "Entire Map")
+        if language == 'eng':
+            items = ("Current Window", "Entire Map")
 
-        item, ok = QtWidgets.QInputDialog.getItem(self, "Screenshot",
-                "Choose a Screenshot Source:", items, 0, False)
-        if ok and item:
-            fn = QFileDialog_getSaveFileName(self, 'Choose a new filename', 'untitled.png', 'Portable Network Graphics (*.png)')
-            if fn == '': return
-            fn = unicode(fn)
+            item, ok = QtWidgets.QInputDialog.getItem(self, "QInputDialog.getItem()", "Choose a Screenshot Source:", items, 0, False)
+            if ok and item:
+                fn = QFileDialog_getSaveFileName(self, 'Choose a new filename', 'untitled.png', 'Portable Network Graphics (*.png)')
+                if fn == '': return
+                fn = unicode(fn)
 
-            if item == "Current Window":
-                ScreenshotImage = QtGui.QImage(self.editor.width(), self.editor.height(), QtGui.QImage.Format_ARGB32)
-                ScreenshotImage.fill(QtCore.Qt.transparent)
+                if item == "Current Window":
+                    ScreenshotImage = QtGui.QImage(self.editor.width(), self.editor.height(), QtGui.QImage.Format_ARGB32)
+                    ScreenshotImage.fill(QtCore.Qt.transparent)
 
-                RenderPainter = QtGui.QPainter(ScreenshotImage)
-                self.editor.render(RenderPainter, QtCore.QRectF(0,0,self.editor.width(),  self.editor.height()), QtCore.QRect(QtCore.QPoint(0,0), QtCore.QSize(self.editor.width(),  self.editor.height())))
-                RenderPainter.end()
+                    RenderPainter = QtGui.QPainter(ScreenshotImage)
+                    self.editor.render(RenderPainter, QtCore.QRectF(0,0,self.editor.width(),  self.editor.height()), QtCore.QRect(QtCore.QPoint(0,0), QtCore.QSize(self.editor.width(),  self.editor.height())))
+                    RenderPainter.end()
 
-            else:
+                else:
+                    ScreenshotImage = QtGui.QImage(self.scene.itemsBoundingRect().width()+100, self.scene.itemsBoundingRect().height()+100, QtGui.QImage.Format_ARGB32)
+                    ScreenshotImage.fill(QtCore.Qt.transparent)
 
-                ScreenshotImage = QtGui.QImage(self.scene.itemsBoundingRect().width()+100, self.scene.itemsBoundingRect().height()+100, QtGui.QImage.Format_ARGB32)
-                ScreenshotImage.fill(QtCore.Qt.transparent)
+                    RenderPainter = QtGui.QPainter(ScreenshotImage)
+                    self.scene.render(RenderPainter, QtCore.QRectF(ScreenshotImage.rect()), self.scene.itemsBoundingRect().adjusted(-50.0, -50.0, 50.0, 50.0))
+                    RenderPainter.end()
 
-                RenderPainter = QtGui.QPainter(ScreenshotImage)
-                self.scene.render(RenderPainter, QtCore.QRectF(ScreenshotImage.rect()), self.scene.itemsBoundingRect().adjusted(-50.0, -50.0, 50.0, 50.0))
-                RenderPainter.end()
+                ScreenshotImage.save(fn, 'PNG', 50)             
+        elif language == 'jpn':
+            items = ("現在のウィンドウ", "マップ全体")
 
-            ScreenshotImage.save(fn, 'PNG', 50)
+            item, ok = QtWidgets.QInputDialog.getItem(self, "QInputDialog.getItem()", "スクリーンショットの範囲", items, 0, False)
+            if ok and item:
+                fn = QFileDialog_getSaveFileName(self, '名前を付けて保存', 'untitled.png', 'Portable Network Graphics (*.png)')
+                if fn == '': return
+                fn = unicode(fn)
+
+                if item == "現在のウィンドウ":
+                    ScreenshotImage = QtGui.QImage(self.editor.width(), self.editor.height(), QtGui.QImage.Format_ARGB32)
+                    ScreenshotImage.fill(QtCore.Qt.transparent)
+
+                    RenderPainter = QtGui.QPainter(ScreenshotImage)
+                    self.editor.render(RenderPainter, QtCore.QRectF(0,0,self.editor.width(),  self.editor.height()), QtCore.QRect(QtCore.QPoint(0,0), QtCore.QSize(self.editor.width(),  self.editor.height())))
+                    RenderPainter.end()
+
+                else:
+                    ScreenshotImage = QtGui.QImage(self.scene.itemsBoundingRect().width()+100, self.scene.itemsBoundingRect().height()+100, QtGui.QImage.Format_ARGB32)
+                    ScreenshotImage.fill(QtCore.Qt.transparent)
+
+                    RenderPainter = QtGui.QPainter(ScreenshotImage)
+                    self.scene.render(RenderPainter, QtCore.QRectF(ScreenshotImage.rect()), self.scene.itemsBoundingRect().adjusted(-50.0, -50.0, 50.0, 50.0))
+                    RenderPainter.end()
+
+                ScreenshotImage.save(fn, 'PNG', 50)
+
 
 
     def exportDoodads(self):
-        fn = QtWidgets.QFileDialog.getExistingDirectory(self, 'Export Doodads')
+        if language == 'eng':
+            fn = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose a folder')
+        if language == 'jpn':
+            fn = QtWidgets.QFileDialog.getExistingDirectory(self, 'フォルダを選択')
         if fn == '': return
         fn = unicode(fn)
 
@@ -1471,7 +1706,10 @@ class KPMainWindow(QtWidgets.QMainWindow):
 
 
     def batchSave(self):
-        target = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose a folder. All KPMAP files will be exported to KPBIN.')
+        if language == 'eng':
+            target = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose a folder')
+        if language == 'jpn':
+            target = QtWidgets.QFileDialog.getExistingDirectory(self, 'フォルダを選択')
         if target == '': return
         target = unicode(target)
 
@@ -1488,6 +1726,10 @@ class KPMainWindow(QtWidgets.QMainWindow):
                 obj.export(target + "/" + fileName[:-6] + '.kpbin')
 
                 print('Saved and Exported {0}'.format(fileName[:-6]))
+
+    
+    def Qooitlas(self):
+        exit()
 
 
 # Edit
@@ -1542,10 +1784,15 @@ class KPMainWindow(QtWidgets.QMainWindow):
 # Layers
 ########################
     def moveTilesetToFolder(self):
-
-        path = QFileDialog_getOpenFileName(self,
-                "Choose a tileset file. It will be copied to the Koopatlas Tilesets folder.", "",
-                "Koopuzzle Tilesets (*.arc)")
+        
+        if language == 'eng':
+            path = QFileDialog_getOpenFileName(self,
+                    "Choose a tileset. Tileset will be copied to the Koopatlas Tilesets Folder.", "",
+                    "Koopuzzle Tilesets (*.arc)")
+        if language == 'jpn':
+            path = QFileDialog_getOpenFileName(self,
+                    "タイルセットを選択してください。タイルセットはKoopatlasのTilesetsフォルダにコピーされます。", "",
+                    "Koopuzzle Tilesets (*.arc)")
         if path:
             import shutil
             import os
@@ -1569,7 +1816,10 @@ class KPMainWindow(QtWidgets.QMainWindow):
 
         from dialogs import KPTilesetChooserDialog
 
-        tilesetName = KPTilesetChooserDialog.run('Choose a tileset to change to:')
+        if language == 'eng':
+            tilesetName = KPTilesetChooserDialog.run('Choose a tileset to change to')
+        if language == 'jpn':
+            tilesetName = KPTilesetChooserDialog.run('変更するタイルセットを選択')
         if tilesetName is None:
             return
 
@@ -1588,11 +1838,18 @@ class KPMainWindow(QtWidgets.QMainWindow):
         if self.scene.playing:
             self.aa.setText('Stop Animations')
             self.layerList.actPlayPause.setIcon(KP.icon('AStop'))
-            self.layerList.actPlayPause.setText('Stop')
+            if language == 'eng':
+                self.layerList.actPlayPause.setText('Stop')
+            elif language == 'jpn':
+                self.layerList.actPlayPause.setText('停止')
         else:
             self.aa.setText('Play Animations')
             self.layerList.actPlayPause.setIcon(KP.icon('APlay'))
-            self.layerList.actPlayPause.setText('Play')
+            if language == 'eng':
+                self.layerList.actPlayPause.setText('Play')
+            elif language == 'jpn':
+                self.layerList.actPlayPause.setText('再生')
+            
 
     def resetAnim(self):
         if self.scene.playing == True:
@@ -1600,9 +1857,15 @@ class KPMainWindow(QtWidgets.QMainWindow):
         self.scene.playPause()
 
     def loadAnimPresets(self):
-        path = QFileDialog_getOpenFileName(self,
-                "Choose a Koopatlas Animation Preset File.", "",
-                "Koopatlas Animation Preset (*.kpa)")
+        if language == 'eng':
+            path = QFileDialog_getOpenFileName(self,
+                    "Choose a Koopatlas Animation Preset File.", "",
+                    "Koopatlas Animation Preset (*.kpa)")
+        elif language == 'jpn':
+            path = QFileDialog_getOpenFileName(self,
+                    "アニメーションプリセットファイルを選択してください。", "",
+                    "Koopatlas Animation Preset (*.kpa)")
+            
         if path:
             import mapfile
 
@@ -1635,7 +1898,10 @@ class KPMainWindow(QtWidgets.QMainWindow):
         import mapfile
 
         msg = QtWidgets.QMessageBox()
-        msg.setText("No Animation Presets Found.")
+        if language == 'eng':
+            msg.setText("No Animation Presets Found.")
+        elif language == 'jpn':
+            msg.setText("プリセットが見つかりません。")
 
         if settings.contains('AnimationPresets'):
             presetList = mapfile.load(settings.value('AnimationPresets'))
@@ -1648,8 +1914,13 @@ class KPMainWindow(QtWidgets.QMainWindow):
             msg.exec_()
             return
 
-        path = QFileDialog_getSaveFileName(self,
-                "Save Koopatlas Animation Preset externally.", "KP Preset.kpa",
+        if language == 'eng':
+            path = QFileDialog_getSaveFileName(self,
+                "Choose a tileset. Tileset will be copied to the Koopatlas Tilesets Folder.", "KP Preset.kpa",
+                "Koopatlas Animation Preset (*.kpa)")
+        elif language == 'jpg':
+            path = QFileDialog_getSaveFileName(self,
+                "タイルセットを選択してください。タイルセットはKoopatlasのTilesetsフォルダにコピーされます。", "KP Preset.kpa",
                 "Koopatlas Animation Preset (*.kpa)")
 
         if path:
@@ -1671,14 +1942,17 @@ class KPMainWindow(QtWidgets.QMainWindow):
 ########################
     def setMapBackground(self):
         from dialogs import getTextDialog
-        newBG = getTextDialog('Map Background', 'Enter a path (ex. /Maps/Water.brres):', KP.map.bgName)
+        if language == 'eng':
+            newBG = getTextDialog('Map Background', 'Enter a path (ex. /Maps/Water.brres):', KP.map.bgName)
+        elif language == 'jpn':
+            newBG = getTextDialog('マップ背景', 'パスを入力 (例：/Maps/Water.brres):', KP.map.bgName)
         if newBG is not None:
             KP.map.bgName = newBG
 
     def showWorldEditor(self):
         from worldeditor import KPWorldEditor
-        dlg = KPWorldEditor(KP.map, self)
-        dlg.show()
+        dls = KPWorldEditor(KP.map, self)
+        dls.show()
 
 # Window
 ########################
@@ -1737,17 +2011,106 @@ class KPMainWindow(QtWidgets.QMainWindow):
 
         self.editor.update()
 
+    '''def LanguageSetting(self):
+        # Add Buttons
+        LangWindow = QtWidgets.QDialog(self)
+
+        if language == 'eng':
+            self.ENTip = QtWidgets.QPushButton('English')
+            self.ENTip.setToolTip('<b>English:</b><br>Change language to English.')
+            self.ENTip.setHidden(False) 
+            self.JPTip = QtWidgets.QPushButton('Japanese(日本語)')
+            self.JPTip.setToolTip('<b>Japanese:</b><br>Change language to Japanese.')
+            self.JPTip.setHidden(False) 
+        elif language == 'jpn':
+            self.ENTip = QtWidgets.QPushButton('英語（English）')
+            self.ENTip.setToolTip('<b>英語:</b><br>言語を英語に変更します。')
+            self.ENTip.setHidden(False) 
+            self.JPTip = QtWidgets.QPushButton('日本語')
+            self.JPTip.setToolTip('<b>日本語:</b><br>言語を日本語に変更します。')
+            self.JPTip.setHidden(False) 
+        # layout
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(LangWindow)
+        layout = QtWidgets.QHBoxLayout() 
+        layout.addWidget(self.ENTip) 
+        layout.addWidget(self.JPTip) 
+
+        # Click Buttons
+        self.ENTip.clicked.connect((self.changeLanguage('eng')), self.LanguageSetting.close)
+        self.JPTip.clicked.connect((self.changeLanguage('jpn')), self.LanguageSetting.close)
+
+        dls = QtWidgets.QDialog(self)
+        if language == 'eng':
+            dls.setWindowTitle('Select Language')
+        elif language == 'jpn':
+            dls.setWindowTitle('言語選択')
+        dls.setLayout(layout)
+        dls.setModal(True)
+        dls.setMinimumWidth(384)
+
+        dls.exec_()'''
+    def LanguageSetting(self):
+        # Create LangWindow as a QDialog (subwindow)
+        LangWindow = QtWidgets.QDialog(self)
+
+        # Add Buttons
+        if language == 'eng':
+            self.ENTip = QtWidgets.QPushButton('English')
+            self.ENTip.setToolTip('<b>English:</b><br>Change language to English.')
+            self.ENTip.setHidden(False) 
+            self.JPTip = QtWidgets.QPushButton('Japanese(日本語)')
+            self.JPTip.setToolTip('<b>Japanese:</b><br>Change language to Japanese.')
+            self.JPTip.setHidden(False) 
+        elif language == 'jpn':
+            self.ENTip = QtWidgets.QPushButton('英語（English）')
+            self.ENTip.setToolTip('<b>英語:</b><br>言語を英語に変更します。')
+            self.ENTip.setHidden(False) 
+            self.JPTip = QtWidgets.QPushButton('日本語')
+            self.JPTip.setToolTip('<b>日本語:</b><br>言語を日本語に変更します。')
+            self.JPTip.setHidden(False) 
+
+        # Layout
+        layout = QtWidgets.QVBoxLayout(LangWindow)
+        layout.addWidget(self.ENTip) 
+        layout.addWidget(self.JPTip) 
+
+        # Click Buttons - closes LangWindow when clicked
+        self.ENTip.clicked.connect(lambda: self.changeLanguage('eng', LangWindow))
+        self.JPTip.clicked.connect(lambda: self.changeLanguage('jpn', LangWindow))
+
+        # Set window title
+        if language == 'eng':
+            LangWindow.setWindowTitle('Select Language')
+        elif language == 'jpn':
+            LangWindow.setWindowTitle('言語選択')
+
+        LangWindow.setModal(True)
+        LangWindow.setMinimumWidth(384)
+        LangWindow.exec_()
+
+    def AppearanceSetting(self):
+        pass
+
+    # write to data.ini
+    def changeLanguage(self, lang, LangWindow):
+        with open('data.ini', mode = 'w') as f:
+            s = (str(appearance) + '\n' + lang)
+            f.write(s)
+        LangWindow.close()
+
 
 # Help
 ########################
     def aboutDialog(self):
-        caption = "About Koopatlas"
-
-        text = "<big><b>Koopatlas</b></big><br><br>    The Koopatlas Editor is an editor for custom two dimensional world maps, for use with the Newer SMBWii world map engine. It should be included with its companion program, Koopuzzle, which will create tilesets compatible with Koopatlas.<br><br>    Koopatlas was programmed by Treeki and Tempus of the Newer Team.<br><br>    Find the website at html://www.newerteam.com for more information."
-
+        if language == 'eng':
+            caption = "About Koopatlas"
+            text = "<big><b>Koopatlas</b></big><br><br>    The Koopatlas Editor is an editor for custom two dimensional world maps, for use with the Newer SMBWii world map engine. It should be included with its companion program, Koopuzzle, which will create tilesets compatible with Koopatlas.<br><br>    Koopatlas was programmed by Treeki and Tempus of the Newer Team.<br><br>    Find the website at html://www.newerteam.com for more information."
+        elif language == 'jpn':
+            caption = "Koopatlasについて"
+            text = "<big><b>Koopatlas</b></big><br><br>    Koopatlas Editor is an editor for custom two dimensional world maps, for use with the Newer SMBWii world map engine. It should be included with its companion program, Koopuzzle, which will create tilesets compatible with Koopatlas.<br><br>    Koopatlas was programmed by Treeki and Tempus of the Newer Team.<br><br>    Find the website at html://www.newerteam.com for more information."
 
         msg = QtWidgets.QMessageBox.about(KP.mainWindow, caption, text)
-
     def goToHelp(self):
         QtGui.QDesktopServices().openUrl(QtCore.QUrl('http://www.newerteam.com/koopatlas-help'))
 
